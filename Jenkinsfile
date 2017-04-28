@@ -16,7 +16,7 @@ node( 'maven' ) {
    stage('wait for OpenSCAP scan results'){
        login()
        sh """
-           IMAGE_NAME=\$(oc get istag java:latest --template='{{ image.metadata.name }}')
+           IMAGE_NAME=\$(oc get istag java:latest --template='{{ .image.metadata.name }}')
            COUNTER=0
            DELAY=10
            MAX_COUNTER=30
