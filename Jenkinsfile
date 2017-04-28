@@ -9,7 +9,7 @@ node( 'maven' ) {
         sh """
             mkdir binary
             mv Dockerfile binary/.
-            oc start-build base-layer-jave --from-dir=binary
+            oc start-build base-layer-java --from-dir=binary
         """
     }
 
