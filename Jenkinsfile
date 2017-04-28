@@ -41,7 +41,7 @@ node( 'maven' ) {
              sleep \$DELAY
             done
            set -e
-       """"
+       """
 
    }
 
