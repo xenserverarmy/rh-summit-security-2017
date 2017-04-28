@@ -25,7 +25,7 @@ node( 'maven' ) {
            while [ \$COUNTER -lt \$MAX_COUNTER ]
            do
              echo "checking image"
-             oc get image \$IMAGE_NAME --template="{{.metadata.annotations}}") | grep security.manageiq.org/last-scan >/dev/null 2>&1
+             oc get image \$IMAGE_NAME --template="{{.metadata.annotations}}" | grep security.manageiq.org/last-scan >/dev/null 2>&1
              if [ \$? -eq 0 ]; then
                  echo "Scan Completed"
                  break
