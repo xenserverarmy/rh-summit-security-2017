@@ -40,12 +40,28 @@ node( 'maven' ) {
              fi
              sleep \$DELAY
             done
+            sleep 5
            set -e
        """
 
    }
 
+    stage('check if scan passed'){
+	sh """
+            IMAGE_NAME=\$(oc get istag java:latest --template='{{ .image.metadata.name }}')
+            oc get image \$IMAGE_NAME --template="{{.metadata.annotations}}" | grep images.openshift.io/deny-execution | grep true >/dev/null 2>&1
+            if [ \$? -eq 0 ]; then
+                 echo 'true' > temp
+                 break
+            fi
+	    echo 'false' > temp
+        """
+        deny = readFile 'temp'
+        if( deny == "true" ){
+		    input "Image has been marked as having a OpenSCAP policy violation. Do you wish to proceed anyway?"
+	}
 
+    }
 
 
 
