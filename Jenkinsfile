@@ -50,6 +50,7 @@ node( 'maven' ) {
 	sh """
             IMAGE_NAME=\$(oc get istag java:latest --template='{{ .image.metadata.name }}')
             oc get image \$IMAGE_NAME -o yaml | grep images.openshift.io/deny-execution | grep true >/dev/null 2>&1
+            set +e
             echo 'a'
             if [ \$? -eq 0 ]; then
                  echo 'b'
