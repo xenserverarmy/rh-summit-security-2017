@@ -51,18 +51,11 @@ node( 'maven' ) {
             IMAGE_NAME=\$(oc get istag java:latest --template='{{ .image.metadata.name }}')
             set +e
             oc get image \$IMAGE_NAME -o yaml | grep images.openshift.io/deny-execution | grep true >/dev/null 2>&1
-            set -e
-            echo 'a'
             if [ \$? -eq 0 ]; then
-                 echo 'b'
                  echo 'true' > temp
-                 echo 'c'
             else
-                 echo 'd'
 	         echo 'false' > temp
-                 echo 'f'
             fi
-                 echo 'g'
         """
         deny = readFile 'temp'
         if( deny.trim() == "true" ){
