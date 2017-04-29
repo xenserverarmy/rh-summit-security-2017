@@ -53,7 +53,7 @@ node( 'maven' ) {
             if [ \$? -eq 0 ]; then
                  echo 'true' > temp
             else
-	        echo 'false' > temp
+	         echo 'false' > temp
             fi
         """
         deny = readFile 'temp'
