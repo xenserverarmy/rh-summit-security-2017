@@ -52,9 +52,9 @@ node( 'maven' ) {
             oc get image \$IMAGE_NAME -o yaml | grep images.openshift.io/deny-execution | grep true >/dev/null 2>&1
             if [ \$? -eq 0 ]; then
                  echo 'true' > temp
-                 break
+            else
+	        echo 'false' > temp
             fi
-	    echo 'false' > temp
         """
         deny = readFile 'temp'
         if( deny == "true" ){
