@@ -57,7 +57,7 @@ node( 'maven' ) {
             fi
         """
         deny = readFile 'temp'
-        if( deny == "true" ){
+        if( deny.trim() == "true" ){
 		    input "Image has been marked as having a OpenSCAP policy violation. Do you wish to proceed anyway?"
 	}
 
