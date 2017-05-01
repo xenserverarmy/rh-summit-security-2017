@@ -8,6 +8,7 @@ node( 'maven' ) {
         login()
         sh """
             oc start-build base-layer-java --from-dir=base-layer-java --follow=true
+            sleep 1
         """
     }
 
