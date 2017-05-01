@@ -4,19 +4,20 @@ node( 'maven' ) {
         checkout scm
     }
 
+    stage('unit test'){}
+    stage('sonar scan'){}
+
     stage('trigger build'){
         login()
         sh """
-            mkdir binary
-            mv Dockerfile binary/.
-            oc start-build base-layer-java --from-dir=binary --follow=true
+            oc start-build base-layer-java --from-dir=java-app --follow=true
         """
     }
 
    stage('wait for OpenSCAP scan results'){
        login()
        sh """
-           IMAGE_NAME=\$(oc get istag java:latest --template='{{ .image.metadata.name }}')
+           IMAGE_NAME=\$(oc get istag java-app:latest --template='{{ .image.metadata.name }}')
            COUNTER=0
            DELAY=10
            MAX_COUNTER=30
@@ -48,28 +49,27 @@ node( 'maven' ) {
 
     stage('check if scan passed'){
 	sh """
-            IMAGE_NAME=\$(oc get istag java:latest --template='{{ .image.metadata.name }}')
+            IMAGE_NAME=\$(oc get istag java-app:latest --template='{{ .image.metadata.name }}')
             set +e
             oc get image \$IMAGE_NAME -o yaml | grep images.openshift.io/deny-execution | grep true >/dev/null 2>&1
             if [ \$? -eq 0 ]; then
-                 echo 'true' > temp
+                 echo 'true' > java_app_temp
             else
-	         echo 'false' > temp
+	         echo 'false' > java_app_temp
             fi
         """
-        deny = readFile 'temp'
+        deny = readFile 'java_app_temp'
         if( deny.trim() == "true" ){
 		    input "Image has been marked as having a OpenSCAP policy violation. Do you wish to proceed anyway?"
 	}
 
     }
 
-
-
-
-
-
-
+  stage('smoke test') {}
+  stage('deploy to dev') {}
+  stage('deploy to prod') {
+     input 'Promte to Prod?'
+  }
 
 }
 

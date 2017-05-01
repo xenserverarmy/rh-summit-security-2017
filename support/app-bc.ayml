@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: BuildConfig
+metadata:
+  name: app-java
+spec:
+  output:
+    to:
+      kind: ImageStreamTag
+      name: java-app:latest
+  source:
+    binary: {}
+    type: Binary
+  strategy:
+    dockerStrategy:
+      from:
+        kind: ImageStreamTag
+        name: java:prod
+    type: Docker
+  triggers: []
