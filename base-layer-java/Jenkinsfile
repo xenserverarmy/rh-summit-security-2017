@@ -50,12 +50,12 @@ node( 'maven' ) {
             set +e
             oc get image \$IMAGE_NAME -o yaml | grep images.openshift.io/deny-execution | grep true >/dev/null 2>&1
             if [ \$? -eq 0 ]; then
-                 echo 'true' > java_app_temp
+                 echo 'true' > base_layer_temp
             else
-	         echo 'false' > java_app_temp
+	         echo 'false' > base_layer_temp
             fi
         """
-        deny = readFile 'java_app_temp'
+        deny = readFile 'base_layer_temp'
         if( deny.trim() == "true" ){
 		    input "Image has been marked as having a OpenSCAP policy violation. Do you wish to proceed anyway?"
 	}
