@@ -11,7 +11,7 @@ node( 'maven' ) {
         login()
         sh """
             oc start-build java-app --from-dir=java-app --follow=true
-            sleep 1
+            sleep 30
         """
     }
 
