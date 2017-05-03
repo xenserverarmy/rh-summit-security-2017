@@ -10,8 +10,12 @@ node( 'maven' ) {
     stage('trigger build'){
         login()
         sh """
-            oc start-build java-app --from-dir=java-app --follow=true
-            sleep 30
+            cd java-app
+            mkdir -p s2i/deployments
+            mvn package dependency:copy-dependencies -Popenshift -DskipTests -e
+            mv target/dependencies/* s2i/deployments/.
+            mv target/*.jar s2i/deployments/. 
+            oc start-build java-app --from-dir=s2i --follow=true
         """
     }
 
