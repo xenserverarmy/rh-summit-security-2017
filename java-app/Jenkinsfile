@@ -65,7 +65,7 @@ node( 'maven' ) {
         """
         deny = readFile 'java_app_temp'
         if( deny.trim() == "true" ){
-		    input "Image has been marked as having a OpenSCAP policy violation. Do you wish to proceed anyway?"
+		    input "Image has been marked as having a Black Duck policy violation. Do you wish to proceed anyway?"
 	}
 
     }
