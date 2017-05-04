@@ -19,19 +19,19 @@ node( 'maven' ) {
         """
     }
 
-   stage('wait for OpenSCAP scan results'){
+   stage('wait for Black Duck scan results'){
        login()
        sh """
            IMAGE_NAME=\$(oc get istag java-app:latest --template='{{ .image.metadata.name }}')
            COUNTER=0
            DELAY=10
-           MAX_COUNTER=30
+           MAX_COUNTER=40
            echo "waiting for openscap scan results for java:latest"
            set +e
            while [ \$COUNTER -lt \$MAX_COUNTER ]
            do
              echo "checking image"
-             oc get image \$IMAGE_NAME --template="{{.metadata.annotations}}" | grep security.manageiq.org/last-scan >/dev/null 2>&1
+             oc get image \$IMAGE_NAME --template="{{.metadata.labels}}" | grep com.blackducksoftware.image.has-vulnerabilities >/dev/null 2>&1
              if [ \$? -eq 0 ]; then
                  echo "Scan Completed"
                  break
@@ -56,7 +56,7 @@ node( 'maven' ) {
 	sh """
             IMAGE_NAME=\$(oc get istag java-app:latest --template='{{ .image.metadata.name }}')
             set +e
-            oc get image \$IMAGE_NAME -o yaml | grep images.openshift.io/deny-execution | grep true >/dev/null 2>&1
+            oc get image \$IMAGE_NAME -o yaml | grep com.blackducksoftware.image.has-vulnerabilities | grep true >/dev/null 2>&1
             if [ \$? -eq 0 ]; then
                  echo 'true' > java_app_temp
             else
