@@ -4,10 +4,7 @@ node( 'maven' ) {
         checkout scm
     }
 
-    stage('unit test'){}
-    stage('sonar scan'){}
-
-    stage('trigger build'){
+    stage('Build image'){
         login()
         sh """
             cd java-app
@@ -19,18 +16,18 @@ node( 'maven' ) {
         """
     }
 
-   stage('wait for Black Duck scan results'){
+   stage('Black Duck Scan'){
        login()
        sh """
            IMAGE_NAME=\$(oc get istag java-app:latest --template='{{ .image.metadata.name }}')
            COUNTER=0
            DELAY=10
-           MAX_COUNTER=40
-           echo "waiting for openscap scan results for java:latest"
+           MAX_COUNTER=50
+           echo "Waiting for Black Duck Hub scan results"
            set +e
            while [ \$COUNTER -lt \$MAX_COUNTER ]
            do
-             echo "checking image"
+             echo "Checking image"
              oc get image \$IMAGE_NAME --template="{{.metadata.labels}}" | grep com.blackducksoftware.image.has-vulnerabilities >/dev/null 2>&1
              if [ \$? -eq 0 ]; then
                  echo "Scan Completed"
@@ -41,7 +38,7 @@ node( 'maven' ) {
                  COUNTER=\$(( \$COUNTER + 1 ))
              fi
              if [ \$COUNTER -eq \$MAX_COUNTER ]; then
-                  echo "Max time checking for scan completed.  Please confirm cloudforms is up and try again"
+                  echo "Max time checking for scan completed."
                   exit 1
              fi
              sleep \$DELAY
@@ -52,7 +49,7 @@ node( 'maven' ) {
 
    }
 
-    stage('check if scan passed'){
+    stage('Validate scan results'){
 	sh """
             IMAGE_NAME=\$(oc get istag java-app:latest --template='{{ .image.metadata.name }}')
             set +e
@@ -70,10 +67,8 @@ node( 'maven' ) {
 
     }
 
-  stage('smoke test') {}
-  stage('deploy to dev') {}
-  stage('deploy to prod') {
-     input 'Promte to Prod?'
+  stage('Deploy for QA') {
+     input 'Promote to QA?'
   }
 
 }
