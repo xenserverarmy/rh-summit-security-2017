@@ -6,7 +6,7 @@ spec:
   source:
     type: "Git"
     git:
-      uri: "https://github.com/jgoldsmith613/rh-summit-security-2017.git"
+      uri: "https://github.com/xenserverarmy/rh-summit-security-2017.git"
   strategy:
     type: "JenkinsPipeline"
     jenkinsPipelineStrategy:
